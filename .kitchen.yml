@@ -1,0 +1,34 @@
+---
+driver:
+  name: vagrant
+
+provisioner:
+  name: chef_zero
+  environments_path: ../../environments
+  client_rb:
+    environment: test
+
+verifier:
+  name: inspec
+
+platforms:
+  - name: debian-9
+    driver:
+      box: debian-9
+      box_url: file:///home/kindlehl/.vagrant.d/boxes/debian-9.box
+      username: vagrant
+      password: vagrant
+
+suites:
+  - name: packer
+    run_list:
+      - recipe[software::packer]
+  - name: terminator
+    run_list:
+      - recipe[software::terminator]
+  - name: vagrant
+    run_list:
+      - recipe[software::vagrant]
+  - name: vim
+    run_list:
+      - recipe[software::vim]

@@ -1,0 +1,11 @@
+name 'software'
+maintainer 'The Authors'
+maintainer_email 'you@example.com'
+license 'All Rights Reserved'
+description 'Installs/Configures kindlehls software'
+long_description 'Installs/Configures kindlehls software'
+version '0.1.0'
+chef_version '>= 13.0'
+
+depends 'poise-python'
+depends 'vagrant'
