@@ -1,0 +1,65 @@
+decrypt_data_bag () {
+
+  if [ "$#" -lt 2 ]; then
+    echo "Need to supply two arguments"
+    return 1
+  fi 
+
+  knife file decrypt ${1} -Fj --secret-file ~/.chef/encrypted_data_bag_secret > ${2}
+}
+
+encrypt_data_bag () {
+
+  if [ "$#" -lt 2 ]; then
+    echo "Need to supply two arguments"
+    exit 1
+  fi 
+
+  knife file encrypt ${1} -Fj --secret-file ~/.chef/encrypted_data_bag_secret > ${2}
+}
+
+opendelete() {
+
+  UUID_LIST=$(nova list | grep `whoami` | awk '{print $2}')
+
+  if [ -z "$UUID_LIST" ]; then
+    echo You have no openstack instances open
+  else
+    while read UUID; do
+      nova delete $UUID &
+    done <<< "$UUID_LIST"
+  fi
+}
+
+blame() {
+  nova list > nova_file
+  for member in {kindlehl,jasonc,whitehet,doublej472,lance,jerryp,eldebrim, freefood}; do
+    echo $member has $(grep $member nova_file | wc -l) openstack instances! 
+  done
+  rm nova_file
+}
+
+
+test_everything() {
+  if ! [[ -d ./tests ]]; then
+    mkdir ./tests
+  fi
+  rm -rf tests/*
+  for suite in $(kitchen list | grep -v "^Instance" | awk '{print $1}'); do
+    kitchen test $suite > tests/${suite}.output 2>&1 &
+  done
+}
+
+getips() {
+  for name in $(cat $1); do 
+    echo $name -\> $(dig +short $name)
+  done
+}
+
+gp() {
+  if ! echo "$(git branch)" | grep '\* master' 2>&1 >/dev/null; then
+    git push origin HEAD $@
+  else
+    echo 'You cannot push to master so conveniently. use "git push origin HEAD"'.
+  fi
+}
