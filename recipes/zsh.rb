@@ -17,3 +17,8 @@ end
     group node['username']
   end
 end
+
+user node['username'] do
+  shell '/bin/zsh'
+  action :modify
+end
