@@ -3,6 +3,7 @@ apt_repository 'oracle' do
   uri 'http://download.virtualbox.org/virtualbox/debian'
   trusted true
   components %w(contrib)
+  key 'A2F683C52980AECF'
 end
 
 package 'virtualbox-5.2'
