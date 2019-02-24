@@ -1,10 +1,7 @@
 package %w( curl git zsh )
 
-execute 'sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"' do
-  user node['username']
-  group node['username']
-  cwd File.join '/home', node['username']
-  creates '.oh-my-zsh'
+execute "curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sudo -u #{node['username']} sh" do
+  creates "/home/#{node['username']}/.oh-my-zsh"
 end
 
 %w(
