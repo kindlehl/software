@@ -1,3 +1,63 @@
+waitfor() {
+    shopt -s expand_aliases
+    while true; do
+        echo "Thank you for being lazy"
+        echo "COMMAND: $2"
+        echo "WATCHED FILES: $(echo $1)"
+# The use of echo here forces the shell to perform globbing and expansions 
+        inotifywait -e modify $(echo $1)
+        echo "EXECUTING COMMAND"    
+        $2  
+        sleep 5
+        clear
+    done
+}
+
+# function that takes a list of usernames, and resets their passwords with randomly generated passwords, 
+# and puts the password in their homedir must be run as root
+generate_pw_for (){
+  for username in "$@"; do
+    pw=$(pwgen 15 1)
+    passwd $username <<EOF
+$pw
+$pw
+EOF
+    echo "This is a randomly generated password courtesy of OSUOSL. Please delete this after you change your password
+    " > /home/${username}/password.deleteme
+    echo "$pw" >> /home/${username}/password.deleteme
+  done
+}
+
+rmtw() {
+  sed 's/\s*$//' "$1" > ${1}.bak mv ${1}.bak "$1" }
+
+digs() {
+  dig "$1" | grep -A 2 ANSWER
+}
+
+digx() {
+  dig -x "$1" | grep -A 2 ANSWER
+}
+
+shady () {
+  ssh-add ~/.ssh/id_rsa_$1
+}
+
+d() {
+  cd $@ && ls
+}
+
+e(){
+  $@ 2>&1 >/dev/null & disown
+}
+
+mistake() {
+  git commit -a --amend <<EOF
+:wq
+EOF
+  git push origin -f HEAD
+}
+
 decrypt_data_bag () {
 
   if [ "$#" -lt 2 ]; then
@@ -33,7 +93,7 @@ opendelete() {
 
 blame() {
   nova list > nova_file
-  for member in {kindlehl,jasonc,whitehet,doublej472,lance,jerryp,eldebrim, freefood}; do
+  for member in {kindlehl,jasonc,whitehet,doublej472,lance,jerryp,eldebrim,freefood}; do
     echo $member has $(grep $member nova_file | wc -l) openstack instances! 
   done
   rm nova_file
